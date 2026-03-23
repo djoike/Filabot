@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.bot-state/
+.bot-state-worktree/
+.env
+.env.*
+!.env.example
+.DS_Store

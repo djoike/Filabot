@@ -1,0 +1,80 @@
+name: Check stock
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  check-stock:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Prepare state directory
+        run: |
+          mkdir -p .bot-state
+
+          if git ls-remote --exit-code --heads origin bot-state >/dev/null 2>&1; then
+            git fetch --no-tags origin bot-state:bot-state
+            git worktree add .bot-state-worktree bot-state
+            if [ -f .bot-state-worktree/state.json ]; then
+              cp .bot-state-worktree/state.json .bot-state/state.json
+            fi
+          else
+            echo "State branch does not exist yet; creating after first run."
+          fi
+
+          if [ ! -f .bot-state/state.json ]; then
+            echo '{"items":{},"updatedAt":null}' > .bot-state/state.json
+          fi
+
+      - name: Run stock bot
+        env:
+          SHEET_CSV_URL: "https://docs.google.com/spreadsheets/d/1MMVqdQe-4Fcl5xj8QYXWP_ajQSOXh2DwaoAss3WQo4Y/export?format=csv"
+          PUSHCUT_WEBHOOK_URL: ${{ secrets.PUSHCUT_WEBHOOK_URL }}
+          COOLDOWN_MINUTES: "10"
+          STATE_FILE_PATH: ".bot-state/state.json"
+        run: npm run start
+
+      - name: Persist state branch
+        if: always()
+        run: |
+          if [ -d .bot-state-worktree ]; then
+            cp .bot-state/state.json .bot-state-worktree/state.json
+            cd .bot-state-worktree
+          else
+            git worktree add -b bot-state .bot-state-worktree
+            cp .bot-state/state.json .bot-state-worktree/state.json
+            cd .bot-state-worktree
+          fi
+
+          git add state.json
+          if git diff --cached --quiet; then
+            echo "No state changes to commit."
+            exit 0
+          fi
+
+          GIT_AUTHOR_NAME="github-actions[bot]" \
+          GIT_AUTHOR_EMAIL="github-actions[bot]@users.noreply.github.com" \
+          GIT_COMMITTER_NAME="github-actions[bot]" \
+          GIT_COMMITTER_EMAIL="github-actions[bot]@users.noreply.github.com" \
+          git commit -m "Update stock bot state"
+
+          git push origin bot-state

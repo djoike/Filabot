@@ -6,7 +6,7 @@
       "productUrl": "https://eu.store.bambulab.com/products/petg-hf",
       "variantId": "49068714787164",
       "lastStatus": "out_of_stock",
-      "lastCheckedAt": "2026-03-23T11:25:16.869Z"
+      "lastCheckedAt": "2026-03-23T12:03:58.054Z"
     },
     "06e3955cca32a78c0b690b327a0dc3e3d1a1a7a9": {
       "name": "Sort PETG",
@@ -14,7 +14,7 @@
       "productUrl": "https://eu.store.bambulab.com/products/pla-basic-filament",
       "variantId": "43992830017755",
       "lastStatus": "out_of_stock",
-      "lastCheckedAt": "2026-03-23T11:25:17.200Z"
+      "lastCheckedAt": "2026-03-23T12:03:58.587Z"
     },
     "948d3c0b5bfb370b0e3da5ea266815e18397b39b": {
       "name": "Reusable spool",
@@ -22,7 +22,7 @@
       "productUrl": "https://eu.store.bambulab.com/products/bambu-reusable-spool",
       "variantId": "625126161979551747",
       "lastStatus": "out_of_stock",
-      "lastCheckedAt": "2026-03-23T11:25:17.422Z"
+      "lastCheckedAt": "2026-03-23T12:03:58.993Z"
     },
     "a1103e059ea85b4fb83ca920140e4de62fb2d29e": {
       "name": "Gul PETG",
@@ -30,9 +30,9 @@
       "productUrl": "https://eu.store.bambulab.com/products/petg-hf",
       "variantId": "659158892719947776",
       "lastStatus": "in_stock",
-      "lastCheckedAt": "2026-03-23T11:25:17.956Z",
-      "lastAlertAt": "2026-03-23T11:25:17.956Z"
+      "lastCheckedAt": "2026-03-23T12:03:59.305Z",
+      "lastAlertAt": "2026-03-23T12:03:59.305Z"
     }
   },
-  "updatedAt": "2026-03-23T11:25:18.448Z"
+  "updatedAt": "2026-03-23T12:03:59.810Z"
 }

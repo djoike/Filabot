@@ -68,6 +68,8 @@ Rules:
 - Keep clear logs per monitored row and an end-of-run summary.
 - If upstream markup changes, preserve exact variant matching semantics.
 - Avoid broad refactors unless required for correctness/maintainability.
+- Commit every iteration or semantic change with a meaningful commit message.
+- Do not batch unrelated changes into a single commit.
 
 ## Verification checklist
 

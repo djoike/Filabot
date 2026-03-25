@@ -64,6 +64,52 @@ Useful scripts:
 
 The workflow runs every 5 minutes and persists state to branch `bot-state` as `state.json`.
 
+## Synology Docker deployment (recommended)
+
+This avoids GitHub schedule delays and keeps checks running locally on your NAS.
+
+### 1) Prepare NAS files
+
+Create a folder, for example:
+
+- `/volume1/docker/filabot/`
+
+Create `/volume1/docker/filabot/.env` with:
+
+```env
+SHEET_CSV_URL=https://docs.google.com/spreadsheets/d/1MMVqdQe-4Fcl5xj8QYXWP_ajQSOXh2DwaoAss3WQo4Y/export?format=csv
+PUSHCUT_WEBHOOK_URL=<your_pushcut_webhook>
+COOLDOWN_MINUTES=10
+STATE_FILE_PATH=/data/state.json
+CHECK_INTERVAL_SECONDS=300
+```
+
+Create state directory:
+
+- `/volume1/docker/filabot/state/`
+
+### 2) Build and publish image
+
+Use a registry (recommended), for example GitHub Container Registry, and publish your image.
+
+Image should be built from this repo's `Dockerfile`.
+
+### 3) Create container in Synology Container Manager
+
+- Image: your published Filabot image
+- Mounts:
+  - `/volume1/docker/filabot/.env` -> `/app/.env` (read-only)
+  - `/volume1/docker/filabot/state` -> `/data`
+- Restart policy: `unless-stopped`
+
+The container runs checks continuously every 5 minutes by default.
+
+### 4) Verify
+
+- Open container logs in Container Manager
+- Confirm repeated lines like "Running stock check"
+- Confirm `/volume1/docker/filabot/state/state.json` updates over time
+
 ## Environment variables
 
 - `SHEET_CSV_URL` (optional)
@@ -74,6 +120,8 @@ The workflow runs every 5 minutes and persists state to branch `bot-state` as `s
   - Default: `10`
 - `STATE_FILE_PATH` (optional)
   - Default: `.bot-state/state.json`
+- `CHECK_INTERVAL_SECONDS` (optional)
+  - Default: `300` (Docker loop mode)
 
 ## Notes
 

@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "check": "tsc --noEmit -p tsconfig.json",
-    "start": "tsx src/index.ts"
+    "start": "tsx src/index.ts",
+    "start:dist": "node dist/index.js"
   },
   "engines": {
     "node": ">=20"

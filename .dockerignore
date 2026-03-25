@@ -1,0 +1,11 @@
+.git
+.github
+node_modules
+dist
+.env
+.env.*
+!.env.example
+.bot-state
+.bot-state-worktree
+README.md
+AGENT.md

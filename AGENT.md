@@ -9,7 +9,8 @@ This file defines repository-specific rules for coding agents working on Filabot
 - Filabot monitors Bambu Lab product variant stock.
 - Input comes from a public Google Sheet CSV.
 - Alerts are sent to Pushcut via webhook.
-- Bot state is persisted as JSON and synced to the `bot-state` branch by GitHub Actions.
+- Bot state is persisted as JSON on runtime storage (for Synology Docker deployment).
+- GitHub Actions is used to publish Docker images, not to run scheduled stock checks.
 
 ## Non-negotiable behavior
 
@@ -49,9 +50,9 @@ Rules:
 ## State and workflow rules
 
 - Local state path defaults to `.bot-state/state.json`.
-- Scheduled workflow is `.github/workflows/check-stock.yml`.
-- Workflow must keep `bot-state` branch persistence working.
-- Do not introduce changes that make repeated scheduled runs non-idempotent.
+- Docker image publish workflow is `.github/workflows/docker-publish.yml`.
+- Runtime scheduling is handled by the container loop (`CHECK_INTERVAL_SECONDS`) on Synology.
+- Preserve idempotent repeated runs and persistent state updates.
 
 ## Environment and secrets
 

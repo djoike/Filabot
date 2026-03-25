@@ -97,5 +97,5 @@ Expected outcomes:
 
 - Changing item keying/state format.
 - Changing alert transition/cooldown semantics.
-- Changing GitHub Actions state persistence flow.
+- Changing Docker image publishing or Synology runtime configuration flow.
 - Replacing exact variant matching with product-level checks.

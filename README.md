@@ -9,7 +9,7 @@ It reads a public Google Sheet, checks stock for each exact variant ID (`?id=...
 - Reads rows from a public Google Sheet CSV export.
 - Uses each row URL's `id` query parameter as the exact variant target.
 - Fetches each unique product page once per run and reuses parsed variant stock for all matching rows.
-- Tracks previous state in `state.json` on a dedicated `bot-state` branch.
+- Tracks previous state in `state.json` on persistent storage.
 - Sends Pushcut webhook alerts when status transitions to in stock, with a 10-minute cooldown.
 
 ## Required sheet columns
@@ -54,15 +54,15 @@ Useful scripts:
 - `npm run build` - compile to `dist/`
 - `npm run start` - run bot
 
-## GitHub Actions setup
+## GitHub Actions image publish
 
-1. Add repository secret:
-   - `PUSHCUT_WEBHOOK_URL`
-2. Confirm the workflow file exists at:
-   - `.github/workflows/check-stock.yml`
-3. Optional: run once manually via **Actions -> Check stock -> Run workflow**
+This repository uses GitHub Actions to build and publish Docker images to GitHub Container Registry (GHCR).
 
-The workflow runs every 5 minutes and persists state to branch `bot-state` as `state.json`.
+- Workflow file: `.github/workflows/docker-publish.yml`
+- Trigger: push to `master`/`main` or manual dispatch
+- Output image: `ghcr.io/<your-github-user>/filabot`
+
+After the first publish, open the package in GitHub and set visibility to **public** if Synology should pull without credentials.
 
 ## Synology Docker deployment (recommended)
 
@@ -88,15 +88,18 @@ Create state directory:
 
 - `/volume1/docker/filabot/state/`
 
-### 2) Build and publish image
+### 2) Publish image via GitHub Actions
 
-Use a registry (recommended), for example GitHub Container Registry, and publish your image.
+Push to `master`/`main` and let the publish workflow create image tags in GHCR.
 
-Image should be built from this repo's `Dockerfile`.
+Default tags include:
+
+- `latest`
+- `sha-<commit>`
 
 ### 3) Create container in Synology Container Manager
 
-- Image: your published Filabot image
+- Image: `ghcr.io/<your-github-user>/filabot:latest`
 - Mounts:
   - `/volume1/docker/filabot/.env` -> `/app/.env` (read-only)
   - `/volume1/docker/filabot/state` -> `/data`
@@ -109,6 +112,7 @@ The container runs checks continuously every 5 minutes by default.
 - Open container logs in Container Manager
 - Confirm repeated lines like "Running stock check"
 - Confirm `/volume1/docker/filabot/state/state.json` updates over time
+- Confirm Pushcut notifications arrive when an item transitions to in stock
 
 ## Environment variables
 
